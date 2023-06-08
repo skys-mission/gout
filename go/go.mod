@@ -1,4 +1,4 @@
-module github.com/skys-mission/sdk/go
+module github.com/skys-mission/pkg/go
 
 go 1.19
 
