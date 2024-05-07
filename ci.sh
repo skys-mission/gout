@@ -1,1 +1,1 @@
-./ci/go.sh
+./ci/go_test.sh
