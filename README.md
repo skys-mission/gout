@@ -11,6 +11,7 @@ Other languages: [简体中文](README_zh.md), (Currently unable to translate mo
 
 * [Quick Start](#quick-start)
 * [Tools utilizing public APIs](#tools-utilizing-public-apis)
+* [Windows API](#windows-api)
 * [Available Environment](#available-environment)
 * [Development Roadmap](#development-roadmap)
 
@@ -24,9 +25,15 @@ Example code reference: api_test.go
 
 # Tools utilizing public APIs
 
-| package         | name       | brief                                                                                                                          |
-|-----------------|------------|--------------------------------------------------------------------------------------------------------------------------------|
-| util/iplocation | iplocation | Obtain IP-related information through the public service of iplocation.net. You should not call the public API very frequently |
+| package                                      | brief                                                                                                                          |
+|----------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| github.com/skys-mission/gout/util/iplocation | Obtain IP-related information through the public service of iplocation.net. You should not call the public API very frequently |
+
+# Windows API
+
+| package                                   | brief                                 |
+|-------------------------------------------|---------------------------------------|
+| github.com/skys-mission/gout/util/win/mbw | Pop up a message box via Windows API. |
 
 # Available Environment
 
