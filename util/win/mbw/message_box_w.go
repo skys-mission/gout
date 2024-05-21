@@ -54,11 +54,11 @@ const (
 	ID_NO     = 7 // No button identifier
 )
 
-// WinMsg function is used to display a message box on the Windows platform
+// ShowMsg function is used to display a message box on the Windows platform
 // title: The title of the message box
 // message: The message content of the message box
 // The return value is of type error, indicating whether the function call was successful, nil for success, otherwise the reason for the error
-func WinMsg(title, message string) (err error) {
+func ShowMsg(title, message string) (err error) {
 	// Convert the title to UTF-16 encoding
 	title16 := utf16.Encode([]rune(title))
 	// Convert the message content to UTF-16 encoding
@@ -77,14 +77,14 @@ func WinMsg(title, message string) (err error) {
 	return err
 }
 
-// WinErrMsg function is used to display an error message box on the Windows platform.
+// ShowErrMsg function is used to display an error message box on the Windows platform.
 //
 // Parameters:
 // message string - The message content to be displayed in the error message box.
 //
 // Return value:
 // err error - The error of the function call, nil for success, otherwise the reason for the error.
-func WinErrMsg(message string) (err error) {
+func ShowErrMsg(message string) (err error) {
 	// Convert the title "error" to UTF-16 encoding
 	title16 := utf16.Encode([]rune("error"))
 	// Convert the passed message content to UTF-16 encoding
@@ -104,7 +104,7 @@ func WinErrMsg(message string) (err error) {
 	return err
 }
 
-// WinCustomMsg function is used to display a custom message box on the Windows platform.
+// ShowCustomMsg function is used to display a custom message box on the Windows platform.
 //
 // Parameters:
 // title: The title of the message box.
@@ -115,7 +115,7 @@ func WinErrMsg(message string) (err error) {
 // Return values:
 // cb: The button number clicked by the user.
 // err: Error information, nil if the operation is successful.
-func WinCustomMsg(title, message string, format uintptr, hwnd uintptr) (cb uintptr, err error) {
+func ShowCustomMsg(title, message string, format uintptr, hwnd uintptr) (cb uintptr, err error) {
 	// Convert the title to UTF-16 encoding
 	title16 := utf16.Encode([]rune(title))
 	// Convert the message content to UTF-16 encoding
