@@ -1,6 +1,8 @@
 package pathut
 
 import (
+	"fmt"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -44,24 +46,34 @@ func TestJoinPath(t *testing.T) {
 		{"two empty", args{[]string{"", ""}}, ""},
 		{"three empty", args{[]string{"", "", ""}}, ""},
 		{"one", args{[]string{"a"}}, "a"},
-		{"two", args{[]string{"a", "b"}}, "a\\b"},
-		{"three", args{[]string{"a", "b", "c"}}, "a\\b\\c"},
-		{"four", args{[]string{"a", "b", "c", "d"}}, "a\\b\\c\\d"},
-		{"with empty in the middle", args{[]string{"a", "", "b"}}, "a\\b"},
-		{"with empty at the end", args{[]string{"a", "b", ""}}, "a\\b"},
-		{"with empty at the beginning", args{[]string{"", "a", "b"}}, "a\\b"},
-		{"with backslash", args{[]string{"a\\b", "c", "d"}}, "a\\b\\c\\d"},
-		{"with forwardslash", args{[]string{"a/b", "c", "d"}}, "a\\b\\c\\d"},
-		{"with backslash at the end", args{[]string{"a\\b", "c", "d"}}, "a\\b\\c\\d"},
-		{"with forwardslash at the end", args{[]string{"a/b", "c", "d"}}, "a\\b\\c\\d"},
-		{"with backslash at the beginning", args{[]string{"a\\b", "c", "d"}}, "a\\b\\c\\d"},
-		{"with forwardslash at the beginning", args{[]string{"a/b", "c", "d"}}, "a\\b\\c\\d"},
+		{"two", args{[]string{"a", "b"}}, filepath.Join("a", "b")},
+		{"three", args{[]string{"a", "b", "c"}}, filepath.Join("a", "b", "c")},
+		{"four", args{[]string{"a", "b", "c", "d"}}, filepath.Join("a", "b", "c", "d")},
+		{"with empty in the middle", args{[]string{"a", "", "b"}}, filepath.Join("a", "b")},
+		{"with empty at the end", args{[]string{"a", "b", ""}}, filepath.Join("a", "b")},
+		{"with empty at the beginning", args{[]string{"", "a", "b"}}, filepath.Join("a", "b")},
+		{"with backslash", args{[]string{"a\\b", "c", "d"}}, filepath.Join("a", "b", "c", "d")},
+		{"with forwardslash", args{[]string{"a/b", "c", "d"}}, filepath.Join("a", "b", "c", "d")},
+		{"with backslash at the end", args{[]string{"a\\b", "c", "d"}}, filepath.Join("a", "b", "c", "d")},
+		{"with forwardslash at the end", args{[]string{"a/b", "c", "d"}}, filepath.Join("a", "b", "c", "d")},
+		{"with backslash at the beginning", args{[]string{"a\\b", "c", "d"}}, filepath.Join("a", "b", "c", "d")},
+		{"with forwardslash at the beginning", args{[]string{"a/b", "c", "d"}}, filepath.Join("a", "b", "c", "d")},
+		{"test prefix", args{[]string{"/a/b", "c", "d"}}, filepath.Join("/a", "b", "c", "d")},
+		{"test prefix2", args{[]string{"\\a/b", "c", "d"}}, filepath.Join("/a", "b", "c", "d")},
+		{"test prefix", args{[]string{"/a/b", "c", "d"}}, filepath.Join("/a", "b", "c", "d")},
+		{"test prefix2", args{[]string{"\\a/b", "c", "d"}}, filepath.Join("/a", "b", "c", "d")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := JoinPath(tt.args.elem...); got != tt.want {
+			if got := filepath.Join(tt.args.elem...); got != tt.want {
 				t.Errorf("JoinPath() = %v, want %v", got, tt.want)
 			}
 		})
 	}
+}
+
+func TestJoinPath2(t *testing.T) {
+	fmt.Println(filepath.Join("D/a", "b/v\\d", "c", "d"))
+	path := JoinPath("/a/b", "c", "d")
+	t.Log(path)
 }

@@ -1,31 +1,32 @@
 package pathut
 
 import (
+	"os"
 	"path/filepath"
 	"regexp"
 )
 
 var splitRe = regexp.MustCompile(`[\\/]`)
 
-// JoinPath 将多个路径元素合并成一个路径字符串。
-// 参数elem是一个可变参数，表示要合并的路径元素。
-// 如果elem为空，则返回空字符串。
-// 函数会先将每个元素分割成多个子路径，然后将所有子路径合并成一个路径字符串。
-// 返回合并后的路径字符串。
 func JoinPath(elem ...string) string {
-	// 如果参数为空，则返回空字符串
+
 	if 0 == len(elem) {
 		return ""
 	}
 
-	// 创建一个临时切片，用于存储分割后的子路径
 	tmpSlice := make([]string, 0, len(elem))
 
-	// 遍历传入的路径元素
+	if len(elem[0]) > 0 {
+		if elem[0][0] == '/' || elem[0][0] == '\\' {
+			tmpSlice = append(tmpSlice, string(os.PathSeparator))
+
+		}
+	}
+
 	for _, v := range elem {
-		// 将每个路径元素分割成多个子路径
+
 		s := SplitPath(v)
-		// 将分割后的子路径追加到临时切片中
+
 		tmpSlice = append(tmpSlice, s...)
 	}
 
