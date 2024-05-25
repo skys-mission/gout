@@ -18,7 +18,7 @@
 
 # 快速开始
 
-你可以使用api.go中的方法，也可以单独加载util下的某个工具。
+你可以使用api.go中的方法，也可以单独加载util下的某个工具（注意一些无法跨平台的方法，不在api.go中）。
 
 实例代码参考：api_test.go
 
@@ -30,9 +30,11 @@
 
 # Windows API
 
-| package                                   | brief                 |
-|-------------------------------------------|-----------------------|
-| github.com/skys-mission/gout/util/win/mbw | 通过windows API 弹出一个消息框 |
+| package                                        | cgo | brief                                                  | windows api          |
+|------------------------------------------------|-----|--------------------------------------------------------|----------------------|
+| github.com/skys-mission/gout/util/win/mbw      | no  | 通过windows API 弹出一个消息框。有简单消息，简单错误，自定义消息框三个方法。仅支持Windows | user32.dll           |
+| github.com/skys-mission/gout/util/win/displayw | no  | 通过windows API查询显示屏分辨率与帧数。有所有显示器和主显示器两个方法。仅支持Windows    | user32.dll/gdi32.dll |
+| github.com/skys-mission/gout/util/win/systemlw | no  | 通过windows API查询当前系统默认语言。有返回名字和代码两个方法。仅支持Windows        | kernel32.dll         |
 
 # 可用环境
 
