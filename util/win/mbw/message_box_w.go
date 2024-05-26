@@ -2,6 +2,7 @@ package mbw
 
 import (
 	"fmt"
+	"github.com/skys-mission/gout/common"
 	"syscall"
 	"unicode/utf16"
 	"unsafe"
@@ -71,7 +72,7 @@ func ShowMsg(title, message string) (err error) {
 		MB_OK,                                  // Flags
 	)
 	// If the returned error is not nil and the error message is "The operation completed successfully.", set the error to nil
-	if err != nil && err.Error() == "The operation completed successfully." {
+	if err != nil && err.Error() == common.WindowsCallInvalidError {
 		err = nil
 	}
 	return err
@@ -98,7 +99,7 @@ func ShowErrMsg(message string) (err error) {
 	)
 	fmt.Println(cb)
 	// If err is not nil and the error message is "The operation completed successfully.", ignore the error
-	if err != nil && err.Error() == "The operation completed successfully." {
+	if err != nil && err.Error() == common.WindowsCallInvalidError {
 		err = nil
 	}
 	return err
@@ -128,7 +129,7 @@ func ShowCustomMsg(title, message string, format uintptr, hwnd uintptr) (cb uint
 		format,                                 // Flags
 	)
 	// If the returned error is not nil and the error message is "The operation completed successfully.", set the error to nil
-	if err != nil && err.Error() == "The operation completed successfully." {
+	if err != nil && err.Error() == common.WindowsCallInvalidError {
 		err = nil
 	}
 	return cb, err
