@@ -1,7 +1,6 @@
 package mbw
 
 import (
-	"fmt"
 	"github.com/skys-mission/gout/common"
 	"syscall"
 	"unicode/utf16"
@@ -91,13 +90,12 @@ func ShowErrMsg(message string) (err error) {
 	// Convert the passed message content to UTF-16 encoding
 	message16 := utf16.Encode([]rune(message))
 	// Call the MessageBoxW function in user32.dll to display the message box
-	cb, _, err := syscall.MustLoadDLL(private_WIN_API_NAME).MustFindProc("MessageBoxW").Call(
+	_, _, err = syscall.MustLoadDLL(private_WIN_API_NAME).MustFindProc("MessageBoxW").Call(
 		0,                                      // Parent window handle, 0 indicates no parent window
 		uintptr(unsafe.Pointer(&message16[0])), // Message string
 		uintptr(unsafe.Pointer(&title16[0])),   // Title string
 		MB_OK|MB_ICONERROR,                     // Flags, indicating a message box with an OK button and error icon
 	)
-	fmt.Println(cb)
 	// If err is not nil and the error message is "The operation completed successfully.", ignore the error
 	if err != nil && err.Error() == common.WindowsCallInvalidError {
 		err = nil
