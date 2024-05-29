@@ -19,28 +19,28 @@ type DisplayInfo struct {
 }
 
 const (
-	ENUM_CURRENT_SETTINGS = 0xFFFFFFFF
-	CCHDEVICENAME         = 32
+	enum_CURRENT_SETTINGS = 0xFFFFFFFF
+	cCHDEVICENAME         = 32
 )
 
 var (
-	user32                   = syscall.NewLazyDLL("user32.dll")
-	gdi32                    = syscall.NewLazyDLL("gdi32.dll")
+	user32 = syscall.NewLazyDLL("user32.dll")
+	//gdi32                    = syscall.NewLazyDLL("gdi32.dll")
 	procEnumDisplayDevicesW  = user32.NewProc("EnumDisplayDevicesW")
 	procEnumDisplaySettingsW = user32.NewProc("EnumDisplaySettingsW")
 )
 
-type DISPLAY_DEVICE struct {
+type display_DEVICE struct {
 	cb           uint32
-	DeviceName   [CCHDEVICENAME]uint16
+	DeviceName   [cCHDEVICENAME]uint16
 	DeviceString [128]uint16
 	StateFlags   uint32
 	DeviceID     [128]uint16
 	DeviceKey    [128]uint16
 }
 
-type DEVMODE struct {
-	dmDeviceName         [CCHDEVICENAME]uint16
+type devMode struct {
+	dmDeviceName         [cCHDEVICENAME]uint16
 	dmSpecVersion        uint16
 	dmDriverVersion      uint16
 	dmSize               uint16
@@ -80,9 +80,9 @@ type DEVMODE struct {
 // enumDisplayDevices function enumerates the display devices of the specified device
 // Parameter i represents the index of the device, starting from 0
 // The return value DISPLAY_DEVICE contains the display information of the device, the bool value indicates whether the enumeration is successful
-func enumDisplayDevices(i uint32) (DISPLAY_DEVICE, bool) {
+func enumDisplayDevices(i uint32) (display_DEVICE, bool) {
 	// Define a DISPLAY_DEVICE structure variable dd
-	var dd DISPLAY_DEVICE
+	var dd display_DEVICE
 	// Set the cb field of dd to the size of dd
 	dd.cb = uint32(unsafe.Sizeof(dd))
 	// Call the procEnumDisplayDevicesW function, passing in four parameters
@@ -104,9 +104,9 @@ func enumDisplayDevices(i uint32) (DISPLAY_DEVICE, bool) {
 // Parameter deviceName is a pointer to the device name
 // Parameter modeNum is the number of the display mode to be enumerated, starting from 0
 // The return value is the enumerated display mode information and whether the enumeration is successful
-func enumDisplaySettings(deviceName *uint16, modeNum uint32) (DEVMODE, bool) {
+func enumDisplaySettings(deviceName *uint16, modeNum uint32) (devMode, bool) {
 	// Define a DEVMODE type variable dm
-	var dm DEVMODE
+	var dm devMode
 	// Set the dmSize field of dm to the size of dm
 	dm.dmSize = uint16(unsafe.Sizeof(dm))
 	// Call the procEnumDisplaySettingsW function, passing in three parameters
@@ -162,7 +162,7 @@ func GetAllDisplays() ([]*DisplayInfo, error) {
 			continue
 		}
 		// Call enumDisplaySettings function to get the current settings of the monitor.
-		dm, ok := enumDisplaySettings(&dd.DeviceName[0], ENUM_CURRENT_SETTINGS)
+		dm, ok := enumDisplaySettings(&dd.DeviceName[0], enum_CURRENT_SETTINGS)
 		if !ok {
 			continue
 		}

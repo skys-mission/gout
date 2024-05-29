@@ -20,6 +20,14 @@ func TestShowErrMsg(t *testing.T) {
 	t.Log("ok")
 }
 
+func TestShowWarningMsg(t *testing.T) {
+	if err := ShowWarningMsg("mbw warning!"); err != nil {
+		t.Errorf("(error)%v", err)
+		return
+	}
+	t.Log("ok")
+}
+
 func TestShowCustomMsg(t *testing.T) {
 	cb, err := ShowCustomMsg("title", "You should click retry.!", MB_ABORTRETRYIGNORE, 0)
 	if err != nil {

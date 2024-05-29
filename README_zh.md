@@ -30,11 +30,12 @@
 
 # Windows API
 
-| package                                        | cgo | brief                                                  | windows api          |
-|------------------------------------------------|-----|--------------------------------------------------------|----------------------|
-| github.com/skys-mission/gout/util/win/mbw      | no  | 通过windows API 弹出一个消息框。有简单消息，简单错误，自定义消息框三个方法。仅支持Windows | user32.dll           |
-| github.com/skys-mission/gout/util/win/displayw | no  | 通过windows API查询显示屏分辨率与帧数。有所有显示器和主显示器两个方法。仅支持Windows    | user32.dll/gdi32.dll |
-| github.com/skys-mission/gout/util/win/systemlw | no  | 通过windows API查询当前系统默认语言。有返回名字和代码两个方法。仅支持Windows        | kernel32.dll         |
+| package                                        | cgo | brief                                                       | windows api                 |
+|------------------------------------------------|-----|-------------------------------------------------------------|-----------------------------|
+| github.com/skys-mission/gout/util/win/mbw      | no  | 通过windows API 弹出一个消息框。有简单消息，简单错误/警告消息，自定义消息框四个方法。仅支持Windows | user32.dll                  |
+| github.com/skys-mission/gout/util/win/displayw | no  | 通过windows API查询显示屏分辨率与帧数。有所有显示器和主显示器两个方法。仅支持Windows         | user32.dll/gdi32.dll        |
+| github.com/skys-mission/gout/util/win/systemlw | no  | 通过windows API查询当前系统默认语言。有返回名字和代码两个方法。仅支持Windows             | kernel32.dll                |
+| github.com/skys-mission/gout/util/win/processw | no  | 通过windows API提供一系列的进程相关方法，用于查询PID，设置进程优先级和相关性。  仅支持Windows  | kernel32.dll/(advapi32.dll) |
 
 # 可用环境
 

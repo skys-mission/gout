@@ -103,6 +103,33 @@ func ShowErrMsg(message string) (err error) {
 	return err
 }
 
+// ShowWarningMsg displays a Windows message box.
+//
+// Parameters:
+// message string - The content of the message to be displayed.
+//
+// Returns:
+// err error - Returns an error if the function call fails, otherwise nil.
+func ShowWarningMsg(message string) (err error) {
+	// Convert the title "error" to UTF-16 encoding
+	title16 := utf16.Encode([]rune("warning"))
+	// Convert the incoming message content to UTF-16 encoding
+	message16 := utf16.Encode([]rune(message))
+	// Call the MessageBoxW function in user32.dll to display the message box
+	_, _, err = syscall.MustLoadDLL(private_WIN_API_NAME).MustFindProc("MessageBoxW").Call(
+		0,                                      // Parent window handle, 0 indicates no parent window
+		uintptr(unsafe.Pointer(&message16[0])), // Message string
+		uintptr(unsafe.Pointer(&title16[0])),   // Title string
+		MB_OK|MB_ICONWARNING,                   // Flags, indicating a message box with an OK button and error icon
+	)
+	// If err is not nil and the error message is "The operation completed successfully.", ignore the error
+	if err != nil && err.Error() == common.WindowsCallInvalidError {
+		err = nil
+	}
+	return err
+
+}
+
 // ShowCustomMsg function is used to display a custom message box on the Windows platform.
 //
 // Parameters:
