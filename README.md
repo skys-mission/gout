@@ -32,11 +32,12 @@ Example code reference: api_test.go
 
 # Windows API
 
-| package                                        | cgo | brief                                                                                                                                                                | windows api          |
-|------------------------------------------------|-----|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|
-| github.com/skys-mission/gout/util/win/mbw      | no  | Utilize the Windows API to pop up a message box. There are three methods: simple message, simple error, and custom message box. Only supports Windows                | user32.dll           |
-| github.com/skys-mission/gout/util/win/displayw | no  | Utilize the Windows API to query the display resolution and refresh rate. There are two methods: for all monitors and for the primary monitor. Only supports Windows | user32.dll&gdi32.dll |
-| github.com/skys-mission/gout/util/win/systemlw | no  | Utilize the Windows API to query the current system's default language. There are two methods: returning the name and the code. Only supports Windows                | kernel32.dll         |
+| package                                        | cgo | brief                                                                                                                                                                | windows api                 |
+|------------------------------------------------|-----|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
+| github.com/skys-mission/gout/util/win/mbw      | no  | Use the Windows API to pop up a message box. There are four methods: simple message, simple error/warning message, and custom message box. Only supports Windows.    | user32.dll                  |
+| github.com/skys-mission/gout/util/win/displayw | no  | Utilize the Windows API to query the display resolution and refresh rate. There are two methods: for all monitors and for the primary monitor. Only supports Windows | user32.dll&gdi32.dll        |
+| github.com/skys-mission/gout/util/win/systemlw | no  | Utilize the Windows API to query the current system's default language. There are two methods: returning the name and the code. Only supports Windows                | kernel32.dll                |
+| github.com/skys-mission/gout/util/win/processw | no  | Provides a series of process-related methods through the Windows API, used for querying PID, setting process priority and relevance. Only supports Windows           | kernel32.dll/(advapi32.dll) |
 
 # Available Environment
 
