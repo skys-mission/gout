@@ -48,4 +48,4 @@ Example code reference: api_test.go
 
 # Development Roadmap
 
-There is no definitive roadmap; we will proceed step by step as we go along. 
+Why don’t you raise an ISSUE and I’ll implement it, or you can implement it yourself and then submit a PR.
