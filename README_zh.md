@@ -1,6 +1,7 @@
 # gout
 
 [![CodeQL Advanced](https://github.com/skys-mission/gout/actions/workflows/codeql.yml/badge.svg)](https://github.com/skys-mission/gout/actions/workflows/codeql.yml)
+[![Codacy Security Scan](https://github.com/skys-mission/gout/actions/workflows/codacy.yml/badge.svg)](https://github.com/skys-mission/gout/actions/workflows/codacy.yml)
 
 这是一个旨在快速构建业务代码的工具库，易用性和实用性导致它可能不适用与基础架构与底层代码。
 
