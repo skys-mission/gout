@@ -1,5 +1,7 @@
 # gout
 
+[![CodeQL Advanced](https://github.com/skys-mission/gout/actions/workflows/codeql.yml/badge.svg)](https://github.com/skys-mission/gout/actions/workflows/codeql.yml)
+
 This is a tool library designed for quickly building business code, its ease of use and practicality may make it
 unsuitable for infrastructure and low-level code.
 
