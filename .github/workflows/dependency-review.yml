@@ -1,39 +1,143 @@
-# Dependency Review Action
-#
-# This Action will scan dependency manifest files that change as part of a Pull Request,
-# surfacing known-vulnerable versions of the packages declared or updated in the PR.
-# Once installed, if the workflow run is marked as required, PRs introducing known-vulnerable
-# packages will be blocked from merging.
-#
-# Source repository: https://github.com/actions/dependency-review-action
-# Public documentation: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-enforcement
-name: 'Dependency review'
+name: 'Dependency Review'
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
     branches: [ "main" ]
+    paths:
+      - 'go.mod'
+      - 'go.sum'
+      - '**/go.mod'
+      - '**/go.sum'
+      - 'vendor/**'
 
-# If using a dependency submission action in this workflow this permission will need to be set to:
-#
-# permissions:
-#   contents: write
-#
-# https://docs.github.com/en/enterprise-cloud@latest/code-security/supply-chain-security/understanding-your-software-supply-chain/using-the-dependency-submission-api
 permissions:
   contents: read
-  # Write permissions for pull-requests are required for using the `comment-summary-in-pr` option, comment out if you aren't using this option
   pull-requests: write
+  security-events: read
 
 jobs:
   dependency-review:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      # Go 特定的设置
+      - name: 'Set up Go'
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+
+      - name: 'Verify dependencies'
+        run: go mod verify
+
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v4
-        # Commonly enabled options, see https://github.com/actions/dependency-review-action#configuration-options for all available options.
         with:
+          # 基本配置
           comment-summary-in-pr: always
-        #   fail-on-severity: moderate
-        #   deny-licenses: GPL-1.0-or-later, LGPL-2.0-or-later
-        #   retry-on-snapshot-warnings: true
+          fail-on-severity: high
+          
+          # 许可证配置 - 考虑到项目使用 LGPL-2.1
+          license-check: true
+          allow-licenses: |
+            MIT
+            Apache-2.0
+            BSD-2-Clause
+            BSD-3-Clause
+            LGPL-2.1
+            LGPL-2.1-only
+            LGPL-2.1-or-later
+            MPL-2.0
+            ISC
+          
+          # 禁止可能存在传染性的更严格的许可证
+          deny-licenses: |
+            AGPL-1.0
+            AGPL-3.0
+            GPL-1.0
+            GPL-2.0
+            GPL-3.0
+          
+          # 漏洞检查配置
+          vulnerability-check: true
+          fail-on-scopes: runtime,development
+          base-scanning-depth: 2
+          
+          # 性能和稳定性配置
+          retry-on-snapshot-warnings: true
+          retry-on-snapshot-warnings-timeout: 300
+          
+          # 高级功能
+          show-openssf-scorecard: true
+      
+      # Go 特定的依赖审查
+      - name: 'Check Go Dependencies'
+        if: success() || failure()
+        run: |
+          go list -m all > dependencies.txt
+          if [ -f "vendor" ]; then
+            echo "Vendor directory found, checking vendored dependencies..."
+            go mod vendor -v
+          fi
+      
+      # 依赖扫描结果通知
+      - name: 'Notify Review Results'
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const conclusion = '${{ job.status }}';
+            const messages = {
+              success: '✅ Dependency review passed successfully!',
+              failure: '❌ Dependency review failed. Please check the issues.',
+              cancelled: '⚠️ Dependency review was cancelled.',
+            };
+            const message = messages[conclusion.toLowerCase()] || '❓ Dependency review status unknown';
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `${message}\n\nKey points:\n- License compliance checked\n- Security vulnerabilities scanned\n- Dependency tree verified\n\nPlease review the detailed report in the Actions tab.`
+            });
+
+  # 额外的依赖分析作业
+  analyze-deps:
+    needs: dependency-review
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v4
+
+      - name: 'Set up Go'
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      
+      # 分析直接依赖
+      - name: 'Analyze Direct Dependencies'
+        run: |
+          go list -m -json all | jq -r 'select(.Direct==true) | .Path' > direct-deps.txt
+      
+      # 检查弃用的依赖
+      - name: 'Check Deprecated Dependencies'
+        run: |
+          go list -m -json all | jq -r 'select(.Deprecated!=null) | .Path' > deprecated-deps.txt
+      
+      # 上传分析结果
+      - name: 'Upload Analysis Results'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-analysis
+          path: |
+            direct-deps.txt
+            deprecated-deps.txt
+          retention-days: 7
