@@ -3,7 +3,7 @@ package gout
 import (
 	"context"
 
-	"github.com/skys-mission/gout/util/iplocation"
+	"github.com/skys-mission/gout/go/pubnet/iplocation"
 )
 
 // IPLocatorByIP Query the ISP information for an IP address based on the IP from api.iplocation.net.

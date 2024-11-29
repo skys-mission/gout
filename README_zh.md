@@ -7,44 +7,113 @@
 
 其它语言：[English](README.md), (Currently unable to translate more)
 
-# 目录
-
+<!-- TOC -->
+* [gout](#gout)
+  * [如何食用](#如何食用)
+  * [公开网络服务](#公开网络服务)
+    * [获取IP信息](#获取ip信息)
+      * [iplocation.net](#iplocationnet)
+  * [GUI](#gui)
+    * [Windows平台](#windows平台)
+      * [Windows消息框（无CGO，依赖系统API）](#windows消息框无cgo依赖系统api)
+  * [操作系统相关](#操作系统相关)
+    * [Windows 平台](#windows-平台)
+      * [查询系统信息（无CGO）](#查询系统信息无cgo)
+      * [进程管理（无CGO）](#进程管理无cgo)
+      * [权限相关（无CGO）](#权限相关无cgo)
+  * [编译相关](#编译相关)
+    * [GO类库（无需编译）和GO工具](#go类库无需编译和go工具)
+    * [CGO](#cgo)
+  * [版本兼容](#版本兼容)
+  * [开发计划](#开发计划)
+    * [当前计划](#当前计划)
 <!-- TOC -->
 
-* [快速开始](#快速开始)
-* [使用互联网公开接口的工具](#使用互联网公开接口的工具)
-* [Windows API](#windows-api)
-* [可用环境](#可用环境)
-* [开发计划](#开发计划)
+## 如何食用
 
-<!-- TOC -->
+**Go类库（无CGO）正常加载既可**
 
-# 快速开始
+```cmd
+go get -u github.com/skys-mission/gout
+```
 
-你可以使用api.go中的方法，也可以单独加载util下的某个工具（注意一些无法跨平台的方法，不在api.go中）。
+推荐在代码页使用`import 子目录`，之后使用`go mod tidy`或IDE工具拉取项目
 
-实例代码参考：api_test.go
+## 公开网络服务
 
-# 使用互联网公开接口的工具
+**你应当遵循网络服务提供者的使用条款。
+本项目只是提供了Go语言调用网络服务的代码，网络服务本身与本项目无关，请根据对应服务官方条款使用。**
 
-| package                                      | brief                                        |
-|----------------------------------------------|----------------------------------------------|
-| github.com/skys-mission/gout/util/iplocation | 通过iplocation.net的公开服务获取IP相关信息，你不应该很频繁的调用公开接口 |
+### 获取IP信息
 
-# Windows API
+#### iplocation.net
 
-| package                                        | cgo | brief                                                       | windows api                 |
-|------------------------------------------------|-----|-------------------------------------------------------------|-----------------------------|
-| github.com/skys-mission/gout/util/win/mbw      | no  | 通过windows API 弹出一个消息框。有简单消息，简单错误/警告消息，自定义消息框四个方法。仅支持Windows | user32.dll                  |
-| github.com/skys-mission/gout/util/win/displayw | no  | 通过windows API查询显示屏分辨率与帧数。有所有显示器和主显示器两个方法。仅支持Windows         | user32.dll/gdi32.dll        |
-| github.com/skys-mission/gout/util/win/systemlw | no  | 通过windows API查询当前系统默认语言。有返回名字和代码两个方法。仅支持Windows             | kernel32.dll                |
-| github.com/skys-mission/gout/util/win/processw | no  | 通过windows API提供一系列的进程相关方法，用于查询PID，设置进程优先级和相关性。  仅支持Windows  | kernel32.dll/(advapi32.dll) |
+- 包：github.com/skys-mission/gout/go/pubnet/iplocation
+- 使用文档：[iplocation库文档](go/pubnet/iplocation/README.md)
+- 功能：查询指定IP信息，查询出口公网IP，查询当前网络环境是否在Chinese-GW内。
 
-# 可用环境
+## GUI
+
+### Windows平台
+
+#### Windows消息框（无CGO，依赖系统API）
+
+- 包：github.com/skys-mission/gout/go/gui/win/mbw
+- 使用文档：[mbw库文档](go/gui/win/mbw/README.md)
+- 通过windows API 弹出一个消息框。有简单消息，简单错误/警告消息，自定义消息框四个方法。仅支持Windows。
+- 依赖：user32.dll（一般正常安装的Windows系统都包含该API,无需特别设置，可直接使用本类库）
+
+## 操作系统相关
+
+### Windows 平台
+
+#### 查询系统信息（无CGO）
+
+- 包：github.com/skys-mission/gout/go/os/win/displayw
+- 使用文档：[displayw库文档](go/os/win/displayw/README.md)
+- 通过windows API查询显示屏分辨率与帧数，颜色信息等参数。有所有显示器和主显示器两个方法。仅支持Windows。
+- 依赖：user32.dll（一般正常安装的Windows系统都包含该API,无需特别设置，可直接使用本类库）
+
+- 包：github.com/skys-mission/gout/go/os/win/systemlw
+- 使用文档：[systemlw库文档](go/os/win/systemlw/README.md)
+- 通过windows API查询当前操作系统使用的语言。有返回LCID标准和IANA标准国家代码两个方法。仅支持Windows。
+- 依赖：kernel32.dll（一般正常安装的Windows系统都包含该API,无需特别设置，可直接使用本类库）
+- 注意：LCID是Windows API的原生返回（十六进制），会直接返回代码，而IANA这里只写了几个国家的语言代码，需要的话可以提PR或使用LCID。
+
+#### 进程管理（无CGO）
+
+- 包：github.com/skys-mission/gout/go/os/win/processw
+- 功能：查询所有进程，设置进程优先级和相关性等方法，我在生产中使用过，但没有完善过相关文档，现在我自己也有点看不懂了。仅支持Windows。
+- 文档待完善
+- kernel32.dll（一般正常安装的Windows系统都包含该API,无需特别设置，可直接使用本类库）
+
+#### 权限相关（无CGO）
+
+- 包：github.com/skys-mission/gout/go/os/win/privilegew
+- 功能：申请Windows调试权限，比管理员权限更高，首先需要工作在管理员权限之下，我在生产中使用过，但没有完善过相关文档，现在我自己也有点看不懂了。仅支持Windows。
+- 文档待完善
+- advapi32.dll（一般正常安装的Windows系统都包含该API,无需特别设置，可直接使用本类库）
+
+## 编译相关
+
+### GO类库（无需编译）和GO工具
 
 - Golang最低版本：1.18
     - 为了使用泛型，虽然现在没有使用泛型，但未来可能会使用
 
-# 开发计划
+### CGO
 
-不如你来提ISSUE我来实现，或者你可以自己实现然后PR。
+计划开发一个音频识别工具
+
+## 版本兼容
+
+虽然自本项目v0.2版本后，本项目将尽可能的保证向上兼容，但如果遇到安全隐患，BUG或其它风险，本项目将直接在小版本破坏向上兼容（这通常不会是全局性的）。
+
+## 开发计划
+
+### 当前计划
+
+| 描述                 | 方向      | 类型     | 排期   |
+|--------------------|---------|--------|------|
+| 通过ip-api.com获取IP信息 | GO类库    | 公开网络服务 | 无排期  |
+| 音频音频识别工具           | GO类库和工具 | 本地AI功能 | 正在开发 |

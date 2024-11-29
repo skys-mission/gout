@@ -3,50 +3,135 @@
 [![CodeQL Advanced](https://github.com/skys-mission/gout/actions/workflows/codeql.yml/badge.svg)](https://github.com/skys-mission/gout/actions/workflows/codeql.yml)
 [![Codacy Security Scan](https://github.com/skys-mission/gout/actions/workflows/codacy.yml/badge.svg)](https://github.com/skys-mission/gout/actions/workflows/codacy.yml)
 
-This is a tool library designed for quickly building business code, its ease of use and practicality may make it
-unsuitable for infrastructure and low-level code.
+This is a tool library designed for quickly building business code. Due to its ease of use and practicality, it may not
+be suitable for infrastructure and low-level code.
 
 Other languages: [简体中文](README_zh.md), (Currently unable to translate more)
 
-# Index
-
+<!-- TOC -->
+* [gout](#gout)
+  * [How to Use](#how-to-use)
+  * [Public Network Services](#public-network-services)
+    * [Get IP Information](#get-ip-information)
+      * [iplocation.net](#iplocationnet)
+  * [GUI](#gui)
+    * [Windows Platform](#windows-platform)
+      * [Windows Message Box (No CGO, dependent on system API)](#windows-message-box-no-cgo-dependent-on-system-api)
+  * [Operating System Related](#operating-system-related)
+    * [Windows Platform](#windows-platform-1)
+      * [Query System Information (No CGO)](#query-system-information-no-cgo)
+      * [Process Management (No CGO)](#process-management-no-cgo)
+      * [Privilege Related (No CGO)](#privilege-related-no-cgo)
+  * [Compilation Related](#compilation-related)
+    * [GO Library (No Compilation Required) and GO Tools](#go-library-no-compilation-required-and-go-tools)
+    * [CGO](#cgo)
+  * [Version Compatibility](#version-compatibility)
+  * [Development Plan](#development-plan)
+    * [Current Plan](#current-plan)
 <!-- TOC -->
 
-* [Quick Start](#quick-start)
-* [Tools utilizing public APIs](#tools-utilizing-public-apis)
-* [Windows API](#windows-api)
-* [Available Environment](#available-environment)
-* [Development Roadmap](#development-roadmap)
+## How to Use
 
-<!-- TOC -->
+**Go library (without CGO) can be loaded normally**
 
-# Quick Start
+```cmd
+go get -u github.com/skys-mission/gout
+```
 
-You can use the methods in api.go or load a specific utility from the util folder individually(Note that some
-platform-specific methods are not included in api.go).
+It is recommended to use `import subdirectory` in the code page, and then use `go mod tidy` or IDE tools to pull the
+project.
 
-Example code reference: api_test.go
+## Public Network Services
 
-# Tools utilizing public APIs
+**You should follow the terms of service of the network service provider.
+This project only provides Go language code to call network services. The network services themselves are unrelated to
+this project. Please use them according to the official terms of the corresponding service.**
 
-| package                                      | brief                                                                                                                          |
-|----------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| github.com/skys-mission/gout/util/iplocation | Obtain IP-related information through the public service of iplocation.net. You should not call the public API very frequently |
+### Get IP Information
 
-# Windows API
+#### iplocation.net
 
-| package                                        | cgo | brief                                                                                                                                                                | windows api                 |
-|------------------------------------------------|-----|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
-| github.com/skys-mission/gout/util/win/mbw      | no  | Use the Windows API to pop up a message box. There are four methods: simple message, simple error/warning message, and custom message box. Only supports Windows.    | user32.dll                  |
-| github.com/skys-mission/gout/util/win/displayw | no  | Utilize the Windows API to query the display resolution and refresh rate. There are two methods: for all monitors and for the primary monitor. Only supports Windows | user32.dll&gdi32.dll        |
-| github.com/skys-mission/gout/util/win/systemlw | no  | Utilize the Windows API to query the current system's default language. There are two methods: returning the name and the code. Only supports Windows                | kernel32.dll                |
-| github.com/skys-mission/gout/util/win/processw | no  | Provides a series of process-related methods through the Windows API, used for querying PID, setting process priority and relevance. Only supports Windows           | kernel32.dll/(advapi32.dll) |
+- Package: github.com/skys-mission/gout/go/pubnet/iplocation
+- Documentation: [iplocation library documentation](go/pubnet/iplocation/README.md)
+- Features: Query specified IP information, query public network IP, query whether the current network environment is
+  within Chinese-GW.
 
-# Available Environment
+## GUI
 
-- Minimum Golang version: 1.18
-    - To use generics
+### Windows Platform
 
-# Development Roadmap
+#### Windows Message Box (No CGO, dependent on system API)
 
-Why don’t you raise an ISSUE and I’ll implement it, or you can implement it yourself and then submit a PR.
+- Package: github.com/skys-mission/gout/go/gui/win/mbw
+- Documentation: [mbw library documentation](go/gui/win/mbw/README.md)
+- Pops up a message box through the Windows API. There are four methods: simple message, simple error/warning message,
+  and custom message box. Only supports Windows.
+- Dependency: user32.dll (This API is usually included in a normally installed Windows system, no special settings are
+  required, and this library can be used directly)
+
+## Operating System Related
+
+### Windows Platform
+
+#### Query System Information (No CGO)
+
+- Package: github.com/skys-mission/gout/go/os/win/displayw
+- Documentation: [displayw library documentation](go/os/win/displayw/README.md)
+- Queries display resolution, frame rate, color information, and other parameters through the Windows API. There are two
+  methods: all displays and primary display. Only supports Windows.
+- Dependency: user32.dll (This API is usually included in a normally installed Windows system, no special settings are
+  required, and this library can be used directly)
+
+- Package: github.com/skys-mission/gout/go/os/win/systemlw
+- Documentation: [systemlw library documentation](go/os/win/systemlw/README.md)
+- Queries the language used by the current operating system through the Windows API. There are two methods: returning
+  LCID standard and IANA standard country codes. Only supports Windows.
+- Dependency: kernel32.dll (This API is usually included in a normally installed Windows system, no special settings are
+  required, and this library can be used directly)
+- Note: LCID is the native return of the Windows API (hexadecimal) and will directly return the code. IANA here only
+  lists language codes for a few countries. If needed, you can submit a PR or use LCID.
+
+#### Process Management (No CGO)
+
+- Package: github.com/skys-mission/gout/go/os/win/processw
+- Features: Query all processes, set process priority and affinity, etc. I have used it in production, but I haven't
+  documented it well, and now I can't understand it myself. Only supports Windows.
+- Documentation to be improved
+- Dependency: kernel32.dll (This API is usually included in a normally installed Windows system, no special settings are
+  required, and this library can be used directly)
+
+#### Privilege Related (No CGO)
+
+- Package: github.com/skys-mission/gout/go/os/win/privilegew
+- Features: Apply for Windows debug privileges, which are higher than administrator privileges. It first needs to work
+  under administrator privileges. I have used it in production, but I haven't documented it well, and now I can't
+  understand it myself. Only supports Windows.
+- Documentation to be improved
+- Dependency: advapi32.dll (This API is usually included in a normally installed Windows system, no special settings are
+  required, and this library can be used directly)
+
+## Compilation Related
+
+### GO Library (No Compilation Required) and GO Tools
+
+- Minimum Golang Version: 1.18
+    - To use generics, although they are not currently used, they may be used in the future.
+
+### CGO
+
+Planning to develop an audio recognition tool.
+
+## Version Compatibility
+
+Although since version v0.2 of this project, this project will try to ensure upward compatibility as much as possible.
+However, if there are security vulnerabilities, bugs, or other risks, this project will directly break upward
+compatibility in a minor version (this is usually not global).
+
+## Development Plan
+
+### Current Plan
+
+| Description                       | Direction           | Type                   | Schedule       |
+|-----------------------------------|---------------------|------------------------|----------------|
+| Get IP information via ip-api.com | GO Library          | Public Network Service | No Schedule    |
+| Audio Recognition Tool            | GO Library and Tool | Local AI Function      | In Development |
