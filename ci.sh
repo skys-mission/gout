@@ -1,1 +1,0 @@
-./ci/go_test.sh
