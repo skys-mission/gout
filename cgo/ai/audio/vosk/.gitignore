@@ -1,0 +1,5 @@
+demo/vosk-model/*
+
+test.wav
+
+*.lib
