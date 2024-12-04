@@ -1,7 +1,7 @@
 name: 'Dependency Review'
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
     branches: [ "main" ]
     paths:
       - 'go.mod'
@@ -53,29 +53,34 @@ jobs:
             LGPL-2.1
             LGPL-2.1-only
             LGPL-2.1-or-later
+            LGPL-3.0
+            LGPL-3.0-only
+            LGPL-3.0-or-later
             MPL-2.0
             ISC
-          
+            GPL-3.0
+            GPL-3.0-only
+            GPL-3.0-or-later
+
           # 禁止可能存在传染性的更严格的许可证
           deny-licenses: |
             AGPL-1.0
             AGPL-3.0
             GPL-1.0
             GPL-2.0
-            GPL-3.0
-          
+
           # 漏洞检查配置
           vulnerability-check: true
           fail-on-scopes: runtime,development
           base-scanning-depth: 2
-          
+
           # 性能和稳定性配置
           retry-on-snapshot-warnings: true
           retry-on-snapshot-warnings-timeout: 300
-          
+
           # 高级功能
           show-openssf-scorecard: true
-      
+
       # Go 特定的依赖审查
       - name: 'Check Go Dependencies'
         if: success() || failure()
@@ -85,7 +90,7 @@ jobs:
             echo "Vendor directory found, checking vendored dependencies..."
             go mod vendor -v
           fi
-      
+
       # 依赖扫描结果通知
       - name: 'Notify Review Results'
         if: always()
@@ -112,7 +117,7 @@ jobs:
     needs: dependency-review
     runs-on: ubuntu-latest
     if: always()
-    
+
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
@@ -121,17 +126,17 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: 'go.mod'
-      
+
       # 分析直接依赖
       - name: 'Analyze Direct Dependencies'
         run: |
           go list -m -json all | jq -r 'select(.Direct==true) | .Path' > direct-deps.txt
-      
+
       # 检查弃用的依赖
       - name: 'Check Deprecated Dependencies'
         run: |
           go list -m -json all | jq -r 'select(.Deprecated!=null) | .Path' > deprecated-deps.txt
-      
+
       # 上传分析结果
       - name: 'Upload Analysis Results'
         uses: actions/upload-artifact@v4

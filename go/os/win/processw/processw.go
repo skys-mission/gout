@@ -1,3 +1,5 @@
+// Copyright (c) 2024, https://github.com/skys-mission and SoyMilkWhisky
+
 package processw
 
 import (
@@ -61,6 +63,25 @@ type processEntry32 struct {
 	PriorityClassBase DWORD
 	Flags             DWORD
 	ExeFile           [260]uint16
+}
+
+// GetProcessHandle retrieves the process handle for the specified process ID.
+//
+// pid: Process ID
+//
+// Returns:
+// handle: Process handle
+// cf: Function to close the handle, call to release handle resources
+// err: Error information, returns a non-nil error if opening the process fails
+func GetProcessHandle(pid DWORD) (handle Handle, cf func() error, err error) {
+	handleS, err := syscall.OpenProcess(process_ALL_ACCESS, false, uint32(pid))
+	if err != nil {
+		return 0, nil, err
+	}
+
+	return Handle(handleS), func() error {
+		return syscall.CloseHandle(syscall.Handle(handle))
+	}, nil
 }
 
 // SetPriorityClass 设置进程的优先级类
