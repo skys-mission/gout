@@ -1,7 +1,10 @@
+// Copyright (c) 2024, https://github.com/skys-mission and SoyMilkWhisky
+
 package main
 
 import (
 	"fmt"
+
 	"github.com/skys-mission/gout/go/os/win/privilegew"
 	"github.com/skys-mission/gout/go/os/win/processw"
 )

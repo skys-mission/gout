@@ -1,3 +1,5 @@
+// Copyright (c) 2024, https://github.com/skys-mission and SoyMilkWhisky
+
 package common
 
 const (

@@ -1,3 +1,5 @@
+// Copyright (c) 2024, https://github.com/skys-mission and SoyMilkWhisky
+
 package privilegew
 
 // 设置中文注释
