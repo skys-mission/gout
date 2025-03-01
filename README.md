@@ -3,8 +3,9 @@
 [![CodeQL Advanced](https://github.com/skys-mission/gout/actions/workflows/codeql.yml/badge.svg)](https://github.com/skys-mission/gout/actions/workflows/codeql.yml)
 [![Codacy Security Scan](https://github.com/skys-mission/gout/actions/workflows/codacy.yml/badge.svg)](https://github.com/skys-mission/gout/actions/workflows/codacy.yml)
 
-This is a tool library aimed at quickly building business code. Due to its ease of use and practicality, it may not be
-suitable for infrastructure and low-level code.
+I noticed that disorganized projects (although this project has a clear directory structure, it covers too many domains) are not conducive to project development, so this repository has been deprecated.
+
+Since I found that my third-party blog has a certain number of bookmarks for this project, I'm keeping this repository available for reference. If you encounter any bugs, please raise an ISSUE, and I will still fix them.
 
 Other languages: [简体中文](README_zh.md), (Currently unable to translate more)
 

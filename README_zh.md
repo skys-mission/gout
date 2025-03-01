@@ -3,7 +3,9 @@
 [![CodeQL Advanced](https://github.com/skys-mission/gout/actions/workflows/codeql.yml/badge.svg)](https://github.com/skys-mission/gout/actions/workflows/codeql.yml)
 [![Codacy Security Scan](https://github.com/skys-mission/gout/actions/workflows/codacy.yml/badge.svg)](https://github.com/skys-mission/gout/actions/workflows/codacy.yml)
 
-这是一个旨在快速构建业务代码的工具库，易用性和实用性导致它可能不适用与基础架构与底层代码。
+我注意到杂乱无章的项目（虽然本项目有清晰的目录，但涉及的领域太多），不利于项目发展，所以该仓库已经弃用。
+
+由于我发现我的三方博客关于该项目有一定的收藏量，所以保留该仓库以供调用。如果出现BUG请提ISSUE，我依旧会修复。
 
 其它语言：[English](README.md), (Currently unable to translate more)
 
